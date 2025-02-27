@@ -49,6 +49,8 @@ void ConnectM::computerTurn() {
     }
 
 }
+
+
 // Start game loop
 void ConnectM::play() {
     board->generateWeightMap();

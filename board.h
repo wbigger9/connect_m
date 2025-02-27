@@ -18,6 +18,7 @@ public:
     
     void printBoard();
     bool placeToken(int col, char token); // Places a token in the lowest available row
+    void removeToken(); // Removes a the top token in a column
     bool checkForWin(char token); // Checks for a win using recent move
     int countConsecutive(char plane[], int size, char token, int M); // Count consecutive tokens
 

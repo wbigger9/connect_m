@@ -83,6 +83,13 @@ bool Board::placeToken(int col, char token) {
     return false; // Column full
 }
 
+// Remove the top token from a column
+void Board::removeToken() {
+    if (board[recentRow][recentCol] != ' ') {
+        board[recentRow][recentCol] = ' ';
+    }
+}
+
 // Count the number of consecutive tokens in a row
 int Board::countConsecutive(char plane[], int size, char token, int M) {
     int count = 0;  // Track consecutive occurrences
@@ -198,23 +205,23 @@ void Board::generateWeightMap() {
 // Set the weight of a cell based on its position
 // Set the weight of a cell based on its position
 int Board::setWeight(int row, int col) {
-    // 1️⃣ Calculate distance from the middle column
-    int middleCol = boardSize / 2;
-    if (boardSize % 2 == 0) {
-        middleCol -= 1;  // Adjust for even-sized boards
-    }
-    int distanceFromMiddle = abs(col - middleCol);
+    
+    // 1️⃣ Correct middle column calculation
+    double middleCol = (boardSize - 1) / 2.0;  // ✅ Center correctly between two middle cols for even board sizes
+    
+    // 2️⃣ Calculate distance from the middle
+    double distanceFromMiddle = abs(col - middleCol);
 
-    // 2️⃣ Calculate distance from the bottom
+    // 3️⃣ Calculate distance from the bottom
     int distanceFromBottom = (boardSize - 1) - row;
 
-    // 3️⃣ Define weight scaling factors
-    double middleScaling = 2.0;  // ✅ Middle column has a stronger effect
-    double bottomScaling = 1.5;  // ✅ Favor bottom rows slightly less than center
+    // 4️⃣ Define weight scaling factors
+    double middleScaling = 2.0;  // ✅ Stronger preference for center
+    double bottomScaling = 1.5;  // ✅ Still favors lower positions
 
-    // 4️⃣ Compute final weight
+    // 5️⃣ Compute final weight
     int weight = round(30 - (middleScaling * distanceFromMiddle) - (bottomScaling * distanceFromBottom));
 
-    // 5️⃣ Ensure weight is non-negative
+    // 6️⃣ Ensure weight is non-negative
     return max(1, weight);
 }
