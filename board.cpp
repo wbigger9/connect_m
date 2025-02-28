@@ -112,13 +112,13 @@ int Board::countConsecutive(char plane[], int size, char token, int M) {
 bool Board::checkForWin(char token) {
     if (recentRow == -1 || recentCol == -1) return false; // No move has been made yet
 
-    char horizontalPlane[boardSize];
-    char verticalPlane[boardSize];
+    vector <char> horizontalPlane(boardSize);
+    vector <char> verticalPlane(boardSize);
     // 🔹 Extract Horizontal Plane
     for (int i = 0; i < boardSize; i++) {
         horizontalPlane[i] = board[recentRow][i];
     }
-    if (countConsecutive(horizontalPlane, boardSize, token, M) >= M) {
+    if (countConsecutive(horizontalPlane.data(), horizontalPlane.size(), token, M) >= M) {
         return true;
     }
 
@@ -126,7 +126,7 @@ bool Board::checkForWin(char token) {
     for (int i = 0; i < boardSize; i++) {
         verticalPlane[i] = board[i][recentCol];
     }
-    if (countConsecutive(verticalPlane, boardSize, token, M) >= M) {
+    if (countConsecutive(verticalPlane.data(), verticalPlane.size(), token, M) >= M) {
         return true;
     }
 
@@ -204,7 +204,7 @@ void Board::generateWeightMap() {
 
 // Set the weight of a cell based on its position
 // Set the weight of a cell based on its position
-int Board::setWeight(int row, int col) {
+int Board::setWeight(int row, int col) const {
     
     // 1️⃣ Correct middle column calculation
     double middleCol = (boardSize - 1) / 2.0;  // ✅ Center correctly between two middle cols for even board sizes
@@ -224,4 +224,60 @@ int Board::setWeight(int row, int col) {
 
     // 6️⃣ Ensure weight is non-negative
     return max(1, weight);
+}
+
+// get the weight of a cell
+int Board::getWeight(int row, int col) {
+    return weightMap[row][col];
+}
+
+// returns true if a token can be placed in the column
+bool Board::canPlaceToken(int col) {
+    if (col < 0 || col >= boardSize) return false;
+    return board[0][col] == ' ';
+}
+
+// removes the top-most token in the given column and returns its row index
+int Board::removeToken(int col) {
+    for (int i = boardSize - 1; i >= 0; i--) {
+        if (board[i][col] != ' ') {
+            board[i][col] = ' ';
+            return i;
+        }
+    }
+    return -1; // if column is empty
+}
+
+// checks if the board is full
+bool Board::isFull() {
+    for (int i = 0; i < boardSize; i++) {
+        if (board[0][i] == ' ') {
+            return false;
+        }
+    }
+    return true;
+}
+
+// heuristic evaluation function
+// returns +10000 if computer wins, -10000 if player wins, otherwise uses the weight map to evaluate the board advantage
+int Board::evaluate(char computerToken, char humanToken) {
+    if (checkForWin(computerToken)) return 10000;
+    if (checkForWin(humanToken)) return -10000;
+    int score = 0;
+
+    for (int i = 0; i < boardSize; i++) {
+        for (int j = 0; j < boardSize; j++) {
+            if (board[i][j] == computerToken) {
+                score += weightMap[i][j];
+            } else if (board[i][j] == humanToken) {
+                score -= weightMap[i][j];
+            }
+        }
+    }
+    return score;
+}
+
+// check if game is over (win or draw)
+bool Board::isTerminalState(char computerToken, char humanToken) {
+    return checkForWin(computerToken) || checkForWin(humanToken) || isFull();
 }

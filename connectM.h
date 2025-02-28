@@ -10,6 +10,8 @@ private:
     Board* board;
     char humanToken = 'X';
     char computerToken = 'O';
+    // minimax with alpha-beta pruning
+    int minimax(int deptj, int alpha, int beta, bool maximizingPlayer);
 
 public:
     ConnectM(int size, int m);

@@ -23,7 +23,14 @@ public:
     int countConsecutive(char plane[], int size, char token, int M); // Count consecutive tokens
 
     void generateWeightMap();
-    int setWeight(int row, int col);
+    int setWeight(int row, int col) const;
+
+    // helper functions for adversarial search
+    bool canPlaceToken(int col);                                // returrns true if a token can be placed in the column
+    int removeToken(int col);                                   // removes the top-most token in the given column and returns its row incdex
+    bool isFull();                                              // returns true if the board is completely full
+    int evaluate(char computerToken, char humanToken);          // heuristic evaluation function
+    bool isTerminalState(char computerToken, char humanToken);  // checks if the game is over (win or draw)
 
     // Getters
     int getWeight(int row, int col);
