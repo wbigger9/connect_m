@@ -114,6 +114,7 @@ void ConnectM::computerTurn() {
 void ConnectM::play() {
     board->generateWeightMap();
     board->printBoard();
+    cout << "Board printed. Waiting for your move..." << endl;  // Debug print
     while (true) {
         humanTurn();
         computerTurn();

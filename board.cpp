@@ -2,7 +2,7 @@
 #include <cmath>
 
 // Constructor
-Board::Board(int size, int m) : boardSize(size), M(m), recentCol(-1), recentRow(-1) {
+Board::Board(int size, int m) : boardSize(size), M(m), recentCol(-1), recentRow(-1), weightMap(nullptr) {
     board = new char*[boardSize];
     for (int i = 0; i < boardSize; i++) {
         board[i] = new char[boardSize];

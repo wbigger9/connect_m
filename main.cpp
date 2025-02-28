@@ -3,7 +3,11 @@
 using namespace std;
 
 int main() {
-    ConnectM game(7, 3);  // Create a 7x7 ConnectM game with M=4
-    game.play();          // Start game loop
+    cout << "Starting ConnectM game..." << endl;
+    ConnectM game(7, 3);
+    game.play();
+    cout << "Game over. Press Enter to exit." << endl;
+    cin.ignore();
+    cin.get();
     return 0;
 }
