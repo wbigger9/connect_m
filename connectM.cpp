@@ -22,9 +22,9 @@ int ConnectM::minimax(int depth, int alpha, int beta, bool maximizingPlayer) {
         int maxEval = -1000000;
         for (int col = 0; col < boardSize; col++) {
             if (board->canPlaceToken(col)) {
-                board->placeToken(col, computerToken);
+                int row = board->placeToken(col, computerToken);
                 int eval = minimax(depth - 1, alpha, beta, false);
-                board->removeToken(col);
+                board->removeTokenAtPosition(row, col);
                 maxEval = max(maxEval, eval);
                 alpha = max(alpha, eval);
                 if (beta <= alpha) {
@@ -37,9 +37,9 @@ int ConnectM::minimax(int depth, int alpha, int beta, bool maximizingPlayer) {
         int minEval = 1000000;
         for (int col = 0; col < boardSize; col++) {
             if (board->canPlaceToken(col)) {
-                board->placeToken(col, humanToken);
+                int row = board->placeToken(col, humanToken);
                 int eval = minimax(depth - 1, alpha, beta, true);
-                board->removeToken(col);
+                board->removeTokenAtPosition(row, col);
                 minEval = min(minEval, eval);
                 beta = min(beta, eval);
                 if (beta <= alpha) {
@@ -81,9 +81,9 @@ void ConnectM::computerTurn() {
 
     for (int col = 0; col < boardSize; col++) {
         if (board->canPlaceToken(col)) {
-            board->placeToken(col, computerToken);
+            int row = board->placeToken(col, computerToken);
             int score = minimax(searchDepth, -1000000, 1000000, false);
-            board->removeToken(col);
+            board->removeTokenAtPosition(row, col);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = col;

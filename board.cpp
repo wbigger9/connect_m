@@ -69,24 +69,23 @@ void Board::printBoard() {
 
 
 // Place a token into the lowest available row in the column
-bool Board::placeToken(int col, char token) {
-    if (col < 0 || col >= boardSize) return false;
+int Board::placeToken(int col, char token) {
+    if (col < 0 || col >= boardSize) return -1;
 
     for (int i = boardSize - 1; i >= 0; i--) {
         if (board[i][col] == ' ') {
             board[i][col] = token;
             recentCol = col;
             recentRow = i;
-            return true;
+            return i;
         }
     }
-    return false; // Column full
+    return -1; // Column full
 }
 
-// Remove the top token from a column
-void Board::removeToken() {
-    if (board[recentRow][recentCol] != ' ') {
-        board[recentRow][recentCol] = ' ';
+void::Board::removeTokenAtPosition(int row, int col) {
+    if (row >= 0 && row < boardSize && col >= 0 && col < boardSize) {
+        board[row][col] = ' ';
     }
 }
 
