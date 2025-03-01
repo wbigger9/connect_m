@@ -130,7 +130,7 @@ bool Board::checkForWin(char token) {
     }
 
 
-   // 🔹 Extract Diagonal Plane (\ direction)
+   //  Extract Diagonal Plane (\ direction)
 vector<char> diagonalPlane;
 
 // Step 1: Move to **top-left (↖) boundary** of the diagonal
@@ -155,7 +155,7 @@ if (countConsecutive(diagonalPlane.data(), diagonalPlane.size(), token, M) >= M)
 
 
 
-      // 🔹 Extract Anti-Diagonal Plane    
+      //  Extract Anti-Diagonal Plane    
 vector<char> antiDiagonalPlane;
 
 // Step 1: Move to **top-right (↗) boundary** of the anti-diagonal
@@ -205,23 +205,23 @@ void Board::generateWeightMap() {
 // Set the weight of a cell based on its position
 int Board::setWeight(int row, int col) const {
     
-    // 1️⃣ Correct middle column calculation
-    double middleCol = (boardSize - 1) / 2.0;  // ✅ Center correctly between two middle cols for even board sizes
+    // 1️ Correct middle column calculation
+    double middleCol = (boardSize - 1) / 2.0;  //  Center correctly between two middle cols for even board sizes
     
-    // 2️⃣ Calculate distance from the middle
+    // 2 Calculate distance from the middle
     double distanceFromMiddle = abs(col - middleCol);
 
-    // 3️⃣ Calculate distance from the bottom
+    // 3 Calculate distance from the bottom
     int distanceFromBottom = (boardSize - 1) - row;
 
-    // 4️⃣ Define weight scaling factors
-    double middleScaling = 2.0;  // ✅ Stronger preference for center
-    double bottomScaling = 1.5;  // ✅ Still favors lower positions
+    // 4️ Define weight scaling factors
+    double middleScaling = 2.0;  //  Stronger preference for center
+    double bottomScaling = 1.5;  //  Still favors lower positions
 
-    // 5️⃣ Compute final weight
+    // 5️ Compute final weight
     int weight = round(30 - (middleScaling * distanceFromMiddle) - (bottomScaling * distanceFromBottom));
 
-    // 6️⃣ Ensure weight is non-negative
+    // 6️ Ensure weight is non-negative
     return max(1, weight);
 }
 

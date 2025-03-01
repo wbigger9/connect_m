@@ -3,7 +3,7 @@
 using namespace std;
 
 // Constructor
-ConnectM::ConnectM(int size, int m) : boardSize(size), M(m) {
+ConnectM::ConnectM(int size, int m, bool humanFirst) : boardSize(size), M(m), humanFirst(humanFirst) {
     board = new Board(size, m);
 }
 
@@ -76,9 +76,38 @@ void ConnectM::computerTurn() {
     cout << "\nComputer's turn!" << endl;
     int bestScore = -1000000;
     int bestMove = -1;
-    int searchDepth = 4; // Adjust this value to control the depth of the search
-    // int col;
+    int searchDepth = 4;
 
+    // First, check if AI can win
+    for (int col = 0; col < boardSize; col++) {
+        if (board->canPlaceToken(col)) {
+            int row = board->placeToken(col, computerToken);
+            if (board->checkForWin(computerToken)) {
+                cout << "Computer places token in column " << col << " (Winning Move)\n";
+                board->printBoard();
+                cout << "Computer wins!\n";
+                exit(0);
+            }
+            board->removeTokenAtPosition(row, col);  // Undo move
+        }
+    }
+
+    //  Then, check if AI must block a human win
+    for (int col = 0; col < boardSize; col++) {
+        if (board->canPlaceToken(col)) {
+            int row = board->placeToken(col, humanToken);
+            if (board->checkForWin(humanToken)) {
+                board->removeTokenAtPosition(row, col);
+                board->placeToken(col, computerToken);
+                cout << "Computer places token in column " << col << " (Blocking Move)\n";
+                board->printBoard();
+                return;
+            }
+            board->removeTokenAtPosition(row, col);  // Undo move
+        }
+    }
+
+    //  Otherwise, run minimax to choose the best move
     for (int col = 0; col < boardSize; col++) {
         if (board->canPlaceToken(col)) {
             int row = board->placeToken(col, computerToken);
@@ -91,6 +120,7 @@ void ConnectM::computerTurn() {
         }
     }
 
+    // ✅ Ensure AI places a valid move
     if (bestMove != -1) {
         board->placeToken(bestMove, computerToken);
         cout << "Computer places token in column " << bestMove << endl;
@@ -101,20 +131,25 @@ void ConnectM::computerTurn() {
    
     board->printBoard();
 
-    // Check if computer wins
+    // ✅ Check if AI just won
     if (board->checkForWin(computerToken)) {
         cout << "Computer wins!" << endl;
         exit(0);
     }
-
 }
+
 
 
 // Start game loop
 void ConnectM::play() {
     board->generateWeightMap();
     board->printBoard();
-    cout << "Board printed. Waiting for your move..." << endl;  // Debug print
+    cout << "Board printed. Waiting for your move..." << endl;
+
+    if (!humanFirst) {
+        computerTurn();  // ✅ AI moves first if H == 0
+    }
+
     while (true) {
         humanTurn();
         computerTurn();
